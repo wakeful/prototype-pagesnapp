@@ -1,0 +1,38 @@
+version: '3'
+services:
+
+  firefox:
+    image: selenium/node-firefox:3.10.0
+    depends_on:
+      - hub
+    environment:
+      HUB_HOST: hub
+    networks:
+    - pagesnapp_network
+
+  hub:
+    image: selenium/hub:3.10.0
+    ports:
+      - "4444:4444"
+    networks:
+    - pagesnapp_network
+
+  minio:
+    image: minio/minio:RELEASE.2018-02-09T22-40-05Z
+    volumes:
+    - minio-data:/export
+    ports:
+    - "9090:9000"
+    environment:
+      MINIO_ACCESS_KEY: MINIO_ACCESS_KEY_REPLACE_ME
+      MINIO_SECRET_KEY: MINIO_SECRET_KEY_REPLACE_ME
+    networks:
+    - pagesnapp_network
+    command: server /export
+
+volumes:
+  minio-data:
+
+networks:
+  pagesnapp_network:
+    driver: bridge
